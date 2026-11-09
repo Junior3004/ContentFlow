@@ -15,6 +15,7 @@ import { useLanguage } from './context/LanguageContext';
 import { apiService } from './services/api';
 import { DashboardView } from './components/DashboardView';
 import { ContentStudioView } from './components/ContentStudioView';
+import { PostComposerModal } from './components/PostComposerModal';
 
 export default function App() {
   const { t, locale, toggleLocale } = useLanguage();
@@ -24,6 +25,8 @@ export default function App() {
   const [accounts, setAccounts] = useState([]);
   const [apiConnected, setApiConnected] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [composerOpen, setComposerOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState(null);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -74,8 +77,19 @@ export default function App() {
     setPosts((prev) => prev.filter((p) => p.id !== postId));
   };
 
-  const handleOpenComposer = () => {
-    setActiveTab('studio');
+  const handleOpenComposer = (post = null) => {
+    setEditingPost(post);
+    setComposerOpen(true);
+  };
+
+  const handleSavePost = async (postPayload) => {
+    const saved = await apiService.savePost(postPayload);
+    setPosts((prev) => {
+      const exists = prev.some((p) => p.id === saved.id);
+      return exists ? prev.map((p) => (p.id === saved.id ? saved : p)) : [saved, ...prev];
+    });
+    setComposerOpen(false);
+    setEditingPost(null);
   };
 
   return (
@@ -197,6 +211,16 @@ export default function App() {
           </div>
         )}
       </main>
+
+      <PostComposerModal
+        isOpen={composerOpen}
+        initialPost={editingPost}
+        onClose={() => {
+          setComposerOpen(false);
+          setEditingPost(null);
+        }}
+        onSave={handleSavePost}
+      />
     </div>
   );
 }
