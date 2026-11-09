@@ -1,0 +1,41 @@
+# Local private docs & notes (not for repository)
+my-docs/
+
+# Environment & Secrets
+.env
+.env.*
+!.env.example
+**/config/secrets.php
+
+# SQLite Databases & runtime data
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+back-end/storage/database/*.sqlite
+back-end/storage/logs/*.log
+back-end/storage/uploads/*
+!back-end/storage/uploads/.gitkeep
+
+# Front-end dependencies & build artifacts
+node_modules/
+front-end/node_modules/
+front-end/dist/
+front-end/build/
+.vite/
+*.tsbuildinfo
+
+# PHP dependencies & test cache (if added later)
+vendor/
+back-end/vendor/
+.phpunit.result.cache
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
